@@ -3,7 +3,7 @@
 from collections import namedtuple
 import rrc_evaluation_funcs
 import importlib
-
+from tensorboardX import SummaryWriter
 def evaluation_imports():
     """
     evaluation_imports: Dictionary ( key = module name , value = alias  )  with python modules used in the evaluation. 
@@ -50,7 +50,7 @@ def validate_data(gtFilePath, submFilePath,evaluationParams):
         rrc_evaluation_funcs.validate_lines_in_file(k,subm[k],evaluationParams['CRLF'],evaluationParams['LTRB'],False,evaluationParams['CONFIDENCES'])
 
 
-def evaluate_method(gtFilePath, submFilePath, evaluationParams):
+def evaluate_method(gtFilePath, submFilePath,epoch, evaluationParams):
     """
     Method evaluate_method: evaluate method and returns the results
         Results. Dictionary with the following values:
@@ -58,7 +58,7 @@ def evaluate_method(gtFilePath, submFilePath, evaluationParams):
         - samples (optional) Per sample metrics. Ex: {'sample1' : { 'Precision':0.8,'Recall':0.9 } , 'sample2' : { 'Precision':0.8,'Recall':0.9 }
     """
 
-    for module,alias in evaluation_imports().iteritems():
+    for module,alias in evaluation_imports().items():
         globals()[alias] = importlib.import_module(module)
 
     def polygon_from_points(points):
@@ -141,6 +141,7 @@ def evaluate_method(gtFilePath, submFilePath, evaluationParams):
     perSampleMetrics = {}
 
     matchedSum = 0
+    writer = SummaryWriter()
 
     Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 
@@ -323,9 +324,12 @@ def evaluate_method(gtFilePath, submFilePath, evaluationParams):
     methodRecall = 0 if numGlobalCareGt == 0 else float(matchedSum)/numGlobalCareGt
     methodPrecision = 0 if numGlobalCareDet == 0 else float(matchedSum)/numGlobalCareDet
     methodHmean = 0 if methodRecall + methodPrecision==0 else 2* methodRecall * methodPrecision / (methodRecall + methodPrecision)
-
+    
+    writer.add_scalar('precision', methodPrecision, epoch)
+    writer.add_scalar('recall', methodRecall, epoch)
+    writer.add_scalar('hmean', methodHmean, epoch)
+    
     methodMetrics = {'precision':methodPrecision, 'recall':methodRecall,'hmean': methodHmean, 'AP': AP  }
-
     resDict = {'calculated':True,'Message':'','method': methodMetrics,'per_sample': perSampleMetrics}
 
     return resDict

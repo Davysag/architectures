@@ -8,7 +8,7 @@ import sys
 import os
 import codecs
 import importlib
-from StringIO import StringIO
+from io import StringIO
 
 def print_help():
     sys.stdout.write('Usage: python %s.py -g=<gtFile> -s=<submFile> [-o=<outputFolder> -p=<jsonParams>]' %sys.argv[0])
@@ -304,10 +304,10 @@ def main_evaluation(p,default_evaluation_params_fn,validate_data_fn,evaluate_met
     resDict={'calculated':True,'Message':'','method':'{}','per_sample':'{}'}    
     try:
         validate_data_fn(p['g'], p['s'], evalParams)  
-        evalData = evaluate_method_fn(p['g'], p['s'], evalParams)
+        evalData = evaluate_method_fn(p['g'], p['s'], p['e'], evalParams)
         resDict.update(evalData)
         
-    except Exception, e:
+    except Exception as e:
         resDict['Message']= str(e)
         resDict['calculated']=False
 
@@ -333,11 +333,11 @@ def main_evaluation(p,default_evaluation_params_fn,validate_data_fn,evaluate_met
     
     if 'o' in p:
         if per_sample == True:
-            for k,v in evalData['per_sample'].iteritems():
+            for k,v in evalData['per_sample'].items():
                 outZip.writestr( k + '.json',json.dumps(v)) 
 
             if 'output_items' in evalData.keys():
-                for k, v in evalData['output_items'].iteritems():
+                for k, v in evalData['output_items'].items():
                     outZip.writestr( k,v) 
 
         outZip.close()
@@ -362,9 +362,9 @@ def main_validation(default_evaluation_params_fn,validate_data_fn):
         if 'p' in p.keys():
             evalParams.update( p['p'] if isinstance(p['p'], dict) else json.loads(p['p'][1:-1]) )
 
-        validate_data_fn(p['g'], p['s'], evalParams)              
-        print 'SUCCESS'
+        validate_data_fn(p['g'], p['s'],p['e'], evalParams)              
+        print('SUCCESS')
         sys.exit(0)
     except Exception as e:
-        print str(e)
+        print(str(e))
         sys.exit(101)

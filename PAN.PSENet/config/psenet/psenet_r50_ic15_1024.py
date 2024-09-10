@@ -2,7 +2,7 @@ model = dict(
     type='PSENet',
     backbone=dict(
         type='resnet50',
-        pretrained=True
+        pretrained=False
     ),
     neck=dict(
         type='FPN',
@@ -25,12 +25,12 @@ model = dict(
     )
 )
 data = dict(
-    batch_size=16,
+    batch_size=9,
     train=dict(
         type='PSENET_IC15',
         split='train',
         is_transform=True,
-        img_size=736,
+        img_size=552,
         short_size=1024,
         kernel_num=7,
         min_scale=0.4,
@@ -46,7 +46,7 @@ data = dict(
 train_cfg = dict(
     lr=1e-3,
     schedule=(200, 400,),
-    epoch=600,
+    epoch=30,
     optimizer='SGD'
 )
 test_cfg = dict(

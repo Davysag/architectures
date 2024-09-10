@@ -2,7 +2,7 @@ model = dict(
     type='PAN',
     backbone=dict(
         type='resnet18',
-        pretrained=True
+        pretrained=False
     ),
     neck=dict(
         type='FPEM_v1',
@@ -30,7 +30,7 @@ model = dict(
     )
 )
 data = dict(
-    batch_size=16,
+    batch_size=9,
     train=dict(
         type='PAN_IC15',
         split='train',
@@ -50,7 +50,7 @@ data = dict(
 train_cfg = dict(
     lr=1e-3,
     schedule='polylr',
-    epoch=600,
+    epoch=30,
     optimizer='Adam'
 )
 test_cfg = dict(

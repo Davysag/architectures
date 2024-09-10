@@ -5,7 +5,7 @@ import os.path as osp
 import random
 import sys
 import time
-
+import subprocess
 import numpy as np
 import torch
 from mmcv import Config
@@ -13,7 +13,7 @@ from mmcv import Config
 from dataset import build_data_loader
 from models import build_model
 from utils import AverageMeter
-
+torch.cuda.empty_cache()
 torch.manual_seed(123456)
 torch.cuda.manual_seed(123456)
 np.random.seed(123456)
@@ -158,6 +158,8 @@ def save_checkpoint(state, checkpoint_path, cfg):
 
 
 def main(args):
+    
+    
     cfg = Config.fromfile(args.config)
     cfg.update(dict(debug=args.debug))
     cfg.data.train.update(dict(debug=args.debug))
@@ -238,6 +240,14 @@ def main(args):
                      state_dict=model.state_dict(),
                      optimizer=optimizer.state_dict())
         save_checkpoint(state, checkpoint_path, cfg)
+        subprocess.run(['python', 'test.py', args.config, 'checkpoints/psenet_r50_ic15_1024/checkpoint.pth.tar'])
+        os.chdir('eval\ic15')
+        argumspe = ['-g=gt.zip', '-s=../../outputs/submit_ic15.zip',f'-e={epochs}']
+        subprocess.run(['python', 'script.py'] + argumspe)
+        os.chdir('../..')
+        
+
+        
 
 
 if __name__ == '__main__':
@@ -245,7 +255,8 @@ if __name__ == '__main__':
     parser.add_argument('config', help='config file path')
     parser.add_argument('--checkpoint', nargs='?', type=str, default=None)
     parser.add_argument('--resume', nargs='?', type=str, default=None)
-    parser.add_argument('--debug', action='store_true')
+    parser.add_argument('--debug', action='store_true', default=False)
     args = parser.parse_args()
+    
 
     main(args)

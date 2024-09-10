@@ -15,11 +15,7 @@ from utils import AverageMeter, Corrector, ResultFormat, Visualizer
 
 def model_structure(model):
     blank = ' '
-    print('-' * 90)
-    print('|' + ' ' * 11 + 'weight name' + ' ' * 10 + '|' \
-          + ' ' * 15 + 'weight shape' + ' ' * 15 + '|' \
-          + ' ' * 3 + 'number' + ' ' * 3 + '|')
-    print('-' * 90)
+    
     num_para = 0
 
     for index, (key, w_variable) in enumerate(model.named_parameters()):
@@ -36,12 +32,7 @@ def model_structure(model):
         if len(str_num) <= 10:
             str_num = str_num + (10 - len(str_num)) * blank
 
-        print('| {} | {} | {} |'.format(key, shape, str_num))
-    print('-' * 90)
-    print('The total number of parameters: ' + str(num_para))
-    print('The parameters of Model {}: {:4f}M'.format(
-        model._get_name(), num_para / 1e6))
-    print('-' * 90)
+       
 
 
 def report_speed(outputs, speed_meters):
@@ -112,7 +103,7 @@ def main(args):
     cfg.update(dict(vis=args.vis))
     cfg.update(dict(debug=args.debug))
     cfg.data.test.update(dict(debug=args.debug))
-    print(json.dumps(cfg._cfg_dict, indent=4))
+    
 
     # data loader
     data_loader = build_data_loader(cfg.data.test)
@@ -135,10 +126,12 @@ def main(args):
 
     if args.checkpoint is not None:
         if os.path.isfile(args.checkpoint):
+
             print("Loading model and optimizer from checkpoint '{}'".format(
                 args.checkpoint))
-
+             
             checkpoint = torch.load(args.checkpoint)
+            
 
             d = dict()
             for key, value in checkpoint['state_dict'].items():

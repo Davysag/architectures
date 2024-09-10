@@ -50,9 +50,9 @@ data = dict(
 train_cfg = dict(
     lr=1e-3,
     schedule='polylr',
-    epoch=600,
+    epoch=30,
     optimizer='Adam',
-    pretrain='checkpoints/pan_r18_synth/checkpoint_1ep.pth.tar'
+    pretrain='checkpoints/pan_r18_ic15/checkpoint.pth.tar'
 )
 test_cfg = dict(
     min_score=0.85,

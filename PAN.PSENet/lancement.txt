@@ -1,0 +1,1 @@
+set CUDA_VISIBLE_DEVICES=0 & python train.py config/psenet/psenet_r50_ic15_1024.py --resume=checkpoints/psenet_r50_ic15_1024/checkpoint.pth.tar

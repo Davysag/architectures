@@ -1,6 +1,6 @@
 import math
 import random
-
+import os
 import cv2
 import mmcv
 import numpy as np
@@ -218,7 +218,8 @@ class PSENET_IC15(data.Dataset):
                  min_scale=0.4,
                  with_rec=False,
                  read_type='pil',
-                 report_speed=False):
+                 report_speed=False,
+                 debug=False):
         self.split = split
         self.is_transform = is_transform
 
@@ -359,7 +360,7 @@ class PSENET_IC15(data.Dataset):
 
         img = scale_aligned_short(img, self.short_size)
         img_meta.update(dict(img_size=np.array(img.shape[:2])))
-
+        img_meta.update(dict(img_name=os.path.splitext(os.path.basename(img_path))[0]))
         img = Image.fromarray(img)
         img = img.convert('RGB')
         img = transforms.ToTensor()(img)
