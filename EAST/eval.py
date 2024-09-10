@@ -325,7 +325,7 @@ def predict(model, epoch):
                         '{},{},{},{},{},{},{},{}\r\n'.format(poly[0, 0], poly[0, 1], poly[1, 0], poly[1, 1], poly[2, 0],
                                                              poly[2, 1], poly[3, 0], poly[3, 1], ))
                     cv2.polylines(im[:, :, ::-1], [box.astype(np.int32).reshape((-1, 1, 2))], True, color=(255, 255, 0),
-                                  thickness=1)
+                                  thickness=2)
 
         save_img_path = os.path.join(output_dir_pic, os.path.basename(im_fn))
         cv2.imwrite(save_img_path, im[:, :, ::-1])

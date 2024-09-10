@@ -85,9 +85,11 @@ def train_net(args):
         writer.add_scalar('Learning_Rate', effective_lr, epoch)
 
         # One epoch's validation
-        test_hmean = compute_hmean(model=model)
+        test_hmean_all = compute_hmean(model=model)
+        test_hmean = test_hmean_all['hmean']
+        writer.add_scalar('precision', test_hmean_all['precision'], epoch)
+        writer.add_scalar('recall', test_hmean_all['recall'], epoch)
         writer.add_scalar('hmean', test_hmean, epoch)
-
         # Check if there was an improvement
         is_best = test_hmean > best_hmean
         best_hmean = max(test_hmean, best_hmean)
@@ -182,7 +184,7 @@ def compute_hmean(model):
     ret = resDict['method']
     print(ret)
 
-    return ret['hmean']
+    return ret
 
 
 def main():

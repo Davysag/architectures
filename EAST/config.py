@@ -2,7 +2,6 @@ import numpy as np
 import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets device for model and PyTorch tensors
-
 input_size = 512
 training_data_path = 'data/train/'  # training dataset to use
 test_data_path = 'data/test/'

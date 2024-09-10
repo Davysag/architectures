@@ -31,7 +31,7 @@ def load_annoataion(p):
     text_tags = []
     if not os.path.exists(p):
         return np.array(text_polys, dtype=np.float32)
-    with open(p, 'r') as f:
+    with open(p, 'r', encoding="utf8") as f:
         reader = csv.reader(f)
         for line in reader:
             label = line[-1]
@@ -44,6 +44,7 @@ def load_annoataion(p):
                 text_tags.append(True)
             else:
                 text_tags.append(False)
+        
         return np.array(text_polys, dtype=np.float32), np.array(text_tags, dtype=np.bool)
 
 
@@ -82,7 +83,7 @@ def check_and_validate_polys(polys, tags, xxx_todo_changeme):
         p_area = polygon_area(poly)
         if abs(p_area) < 1:
             # print poly
-            print('invalid poly')
+            print('invalid poly',poly)
             continue
         if p_area > 0:
             print('poly in wrong direction')
