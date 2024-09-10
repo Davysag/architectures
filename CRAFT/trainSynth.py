@@ -67,7 +67,7 @@ class Trainer(object):
             param = torch.load(self.config.train.ckpt_path, map_location=map_location)
         else:
             param = None
-        return param
+        return param 
 
     def adjust_learning_rate(self, optimizer, gamma, step, lr):
         lr = lr * (gamma ** step)

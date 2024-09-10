@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
 import numpy as np
+from tensorboardX import SummaryWriter
 from shapely.geometry import Polygon
 """
 cite from:
@@ -13,7 +14,9 @@ https://github.com/MhLiao/DB/blob/3c32b808d4412680310d3d28eeb6a2d5bf1566c5/conce
 
 class DetectionIoUEvaluator(object):
     def __init__(self, iou_constraint=0.5, area_precision_constraint=0.5):
+        self.epoch = 1
         self.iou_constraint = iou_constraint
+        self.writer = SummaryWriter()
         self.area_precision_constraint = area_precision_constraint
 
     def evaluate_image(self, gt, pred):
@@ -211,12 +214,16 @@ class DetectionIoUEvaluator(object):
                                                                     methodRecall * methodPrecision / (
                                                                             methodRecall + methodPrecision)
         # print(methodRecall, methodPrecision, methodHmean)
+        self.writer.add_scalar('precision', methodPrecision, self.epoch)
+        self.writer.add_scalar('recall', methodRecall, self.epoch)
+        self.writer.add_scalar('hmean', methodHmean, self.epoch)
         # sys.exit(-1)
         methodMetrics = {
             'precision': methodPrecision,
             'recall': methodRecall,
             'hmean': methodHmean
         }
+        self.epoch+=1
 
         return methodMetrics
 
